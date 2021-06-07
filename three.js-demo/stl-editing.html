@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>My first three.js app</title>
+		<style>
+			body { margin: 0; }
+		</style>
+	</head>
+	<body>
+
+		<script type="module">
+			import * as THREE from './js/three.module.js';
+            import { STLLoader } from './js/STLLoader.js';
+            import  { OrbitControls } from './js/OrbitControls.js';
+
+            var mesh;
+
+			const scene = new THREE.Scene();
+            const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 10000 );
+            camera.position.z = 5
+
+            const renderer = new THREE.WebGLRenderer();
+            renderer.setSize( window.innerWidth, window.innerHeight );
+            document.body.appendChild( renderer.domElement );
+            
+            const controls = new OrbitControls(camera, renderer.domElement)
+            controls.enableDamping = true
+
+            const loader = new STLLoader();
+
+            loader.load(
+                './eiffel.stl',
+                function (geometry) {
+                mesh = new THREE.Mesh(geometry, new THREE.MeshBasicMaterial( { color: 0x00ff00 } ))
+                scene.add(mesh);
+                animate();
+            },
+            (xhr) => {
+                console.log((xhr.loaded / xhr.total * 100) + '% loaded')
+            },
+            (error) => {
+                console.log(error);
+            }
+            );
+
+
+            function animate() {
+
+	            requestAnimationFrame( animate );
+                mesh.rotation.x = 0;
+                mesh.rotation.y = 0;
+	            renderer.render( scene, camera );
+
+            }
+
+		</script>
+	</body>
+</html>
